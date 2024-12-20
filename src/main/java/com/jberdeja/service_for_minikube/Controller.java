@@ -10,12 +10,32 @@ public class Controller {
 
     @GetMapping("/get")
     public String checkGet() {
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
         System.out.println("Execute get");
         return "get-ok";
     }
 
     @PostMapping("/post")
     public String checkPost(@RequestBody String name) {
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
+        System.out.println("HAPPY CASE");
         System.out.println("Execute post");
         return name + " - ok";
     }
