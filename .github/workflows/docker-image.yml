@@ -60,5 +60,5 @@ jobs:
     - name: Update Kubernetes Deployment
       run: | #Este bloque de código en el archivo de GitHub Actions actualiza el Deployment de Kubernetes y aplica los cambios de la nueva imagen Docker en el clúster de Minikube. 
         kubectl set image deployment/deployment-service-for-minikube \
-        container-service-for-minikube=${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
+        container-service-for-minikube=${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:tagname
         kubectl rollout status deployment/deployment-service-for-minikube
