@@ -38,7 +38,7 @@ jobs:
 
     # 4. Construir la imagen Docker
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:tagname .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest .
 
 
     # 5. Iniciar sesión en Docker Hub
@@ -50,7 +50,7 @@ jobs:
 
     # 6. Subir la imagen a Docker Hub
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:tagname
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
 
     # Crear o actualizar el Deployment
     - name: Apply Deployment
@@ -60,5 +60,5 @@ jobs:
     - name: Update Kubernetes Deployment
       run: | #Este bloque de código en el archivo de GitHub Actions actualiza el Deployment de Kubernetes y aplica los cambios de la nueva imagen Docker en el clúster de Minikube. 
         kubectl set image deployment/deployment-service-for-minikube \
-        container-service-for-minikube=${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:tagname
+        container-service-for-minikube=${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
         kubectl rollout status deployment/deployment-service-for-minikube
