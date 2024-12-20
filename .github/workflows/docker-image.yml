@@ -27,6 +27,14 @@ jobs:
     # 3. Configurar Docker para usar Minikube
     - name: Configure Docker to use Minikube
       run: eval $(minikube docker-env) #Este comando configura Docker para que utilice el entorno Docker de Minikube
+    
+    # 4.1. Construir el proyecto con Maven
+    - name: Build project
+      run: mvn clean package
+
+    # Verificar archivos generados
+    - name: List files
+      run: ls -l target
 
     # 4. Construir la imagen Docker
     - name: Build Docker image
