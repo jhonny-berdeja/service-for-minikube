@@ -3,7 +3,7 @@ name: Docker Build and Push Jhonny Berdeja
 on:
   push:
     branches:
-      - master  # Ajusta a la rama que uses para despliegues, por ejemplo, 'main' o 'master' j
+      - master  # Ajusta a la rama que uses para despliegues, por ejemplo, 'main' o 'master'
 
 jobs:
   build:
