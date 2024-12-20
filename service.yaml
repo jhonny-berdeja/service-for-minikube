@@ -1,0 +1,26 @@
+#configura un recurso de tipo Service en Kubernetes. Un Service es un componente de Kubernetes que define cómo acceder a los Pods dentro del clúster, ya sea desde otros Pods o desde fuera del clúster (dependiendo del tipo de Service)
+apiVersion: v1
+kind: Service #especifica que este archivo describe un Service de Kubernetes.
+metadata:
+  name: service-of-service-for-minikube #Este es el nombre del Service
+spec:
+  selector:
+    app: pods-service-for-minikube #Este es un selector que indica qué Pods deben ser gestionados por este Service
+  ports:
+    - protocol: TCP
+      port: 8080 #El puerto en el que el Service estará disponible para otros Pods o para el exterior
+      targetPort: 8080 #El puerto en el contenedor que debe recibir el tráfico. En este caso, es también el puerto 8080
+  type: LoadBalancer #Este tipo de Service crea un balanceador de carga externo (usualmente proporcionado por un proveedor de infraestructura como AWS, GCP, o Azure) 
+
+#para aplicar el service
+#kubectl apply -f service.yaml
+#Para asegurarte de que el servicio está corriendo correctamente, ejecuta
+#kubectl get services
+#debería mostrarte un servicio con una dirección IP externa
+
+#Si Minikube ha asignado una dirección IP externa, puedes acceder a tu aplicación a través de esa IP. Para encontrar la IP, ejecuta:
+#minikube service service-of-service-for-minikube --url
+
+#Problema detectado: El campo EXTERNAL-IP está en estado <pending>. Esto ocurre porque Minikube no proporciona un balanceador de carga externo como lo hacen los proveedores de nube (AWS, GCP, Azure)
+#Solución: Para probar tu servicio con Minikube, necesitas exponerlo manualmente usando el comando
+#minikube service service-of-service-for-minikube

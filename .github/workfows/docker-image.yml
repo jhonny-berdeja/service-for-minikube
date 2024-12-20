@@ -1,43 +1,51 @@
-name: Docker Build and Push Jhonny Berdeja
+# describe un workflow de GitHub Actions que automatiza el proceso de CI/CD (Integración Continua y Despliegue Continuo) para una aplicación en un clúster de Minikube
+name: CI/CD for Minikube Deployment
 
 on:
   push:
     branches:
-      - master  # Ajusta a la rama que uses para despliegues, por ejemplo, 'main' o 'master' m
+      - master
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout el código del repositorio
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # 1. Clonar el repositorio
+    - name: Checkout code
+      uses: actions/checkout@v3 #ste paso utiliza una acción preconfigurada de GitHub para clonar el código fuente del repositorio en el entorno de ejecución del runner
 
-      # Configurar Docker
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    # 2. Configurar Minikube
+    - name: Set up Minikube #Este paso instala Minikube en el runner
+      run: | #Se actualizan los paquetes del sistema, se instala conntrack (una herramienta necesaria para Minikube), se descarga la última versión de Minikube y finalmente se inicia Minikube.
+        sudo apt-get update
+        sudo apt-get install -y conntrack
+        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        sudo install minikube-linux-amd64 /usr/local/bin/minikube
+        minikube start
 
-      # Iniciar sesión en Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}  # Guardado en GitHub Secrets
-          password: ${{ secrets.DOCKER_PASSWORD }}  # Guardado en GitHub Secrets
+    # 3. Configurar Docker para usar Minikube
+    - name: Configure Docker to use Minikube
+      run: eval $(minikube docker-env) #Este comando configura Docker para que utilice el entorno Docker de Minikube
 
-      # Construir y etiquetar la imagen  Docker
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
-      # Configurar kubectl para usar el clúster Minikube
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'v1.21.2'
+    # 4. Construir la imagen Docker
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/image-service-for-minikube:latest .
 
-      # Desplegar la aplicación en Minikube
-      - name: Deploy to Minikube
-        run: |
-          kubectl apply -f deployment.yaml
-          kubectl rollout status deployment/deployment-service-for-minikube
+    # 5. Iniciar sesión en Docker Hub
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+    # 6. Subir la imagen a Docker Hub
+    - name: Push Docker image
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/image-service-for-minikube:latest
+
+    # 7. Aplicar cambios en Kubernetes
+    - name: Update Kubernetes Deployment
+      run: | #Este bloque de código en el archivo de GitHub Actions actualiza el Deployment de Kubernetes y aplica los cambios de la nueva imagen Docker en el clúster de Minikube. 
+        kubectl set image deployment/deployment-service-for-minikube \
+        container-service-for-minikube=${{ secrets.DOCKER_HUB_USERNAME }}/image-service-for-minikube:latest
+        kubectl rollout status deployment/deployment-service-for-minikube

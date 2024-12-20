@@ -1,32 +1,26 @@
+# describe cómo debería ejecutarse un conjunto de contenedores en un clúster de Kubernetes
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-service-for-minikube
+  name: deployment-service-for-minikube #Es el nombre del Deployment
 spec:
-  replicas: 1
+  replicas: 1 #Indica cuántas réplicas del contenedor deben ejecutarse
   selector:
     matchLabels:
-      app: pods-service-for-minikube
+      app: pods-service-for-minikube #Especifica un selector de etiquetas para determinar qué Pods este Deployment manejará
   template:
-    metadata:
+    metadata:                         #Ambas app deben coincidir
       labels:
-        app: pods-service-for-minikube
+        app: pods-service-for-minikube #Define las etiquetas que se asignarán a los Pods creados por este Deployment
     spec:
       containers:
-      - name: container-service-for-minikube
-        image: ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
-        ports:
-        - containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: service-of-service-for-minikube
-spec:
-  selector:
-    app: pods-service-for-minikube
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-  type: LoadBalancer
+        - name: container-service-for-minikube #El nombre del contenedor dentro del Pod
+          image: image-service-for-minikube  # El nombre de la imagen que subiste a Minikube
+          ports:
+            - containerPort: 8080 # puerto en el que tu aplicación Spring Boot escucha
+
+#para aplicar el Deployment
+#kubectl apply -f deployment.yaml
+#Para asegurarte de que el despliegue  están corriendo correctamente, ejecuta
+#kubectl get pods
+#deberia mostrar status Running para indicar que esta ok
