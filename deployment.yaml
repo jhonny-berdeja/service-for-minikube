@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: container-service-for-minikube #El nombre del contenedor dentro del Pod
-          image: jhonnyberdeja/image-service-for-minikube:latest  # El nombre de la imagen que subiste a Minikube .
+          image: jhonnyberdeja/repository-service-for-minikube:tagname  # El nombre de la imagen que subiste a Minikube .
           ports:
             - containerPort: 8080 # puerto en el que tu aplicación Spring Boot escucha
 
