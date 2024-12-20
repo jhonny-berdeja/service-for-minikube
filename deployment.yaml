@@ -11,7 +11,7 @@ spec:
   template:
     metadata:                         #Ambas app deben coincidir
       labels:
-        app: pods-service-for-minikube #Define las etiquetas que se asignarán a los Pods creados por este Deployment
+        app: pods-service-for-minikube #Define las etiquetas que se asignarán a los Pods creados por este Deployment .
     spec:
       containers:
         - name: container-service-for-minikube #El nombre del contenedor dentro del Pod
