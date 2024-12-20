@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-service-for-minikube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pods-service-for-minikube
+  template:
+    metadata:
+      labels:
+        app: pods-service-for-minikube
+    spec:
+      containers:
+      - name: container-service-for-minikube
+        image: ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-of-service-for-minikube
+spec:
+  selector:
+    app: pods-service-for-minikube
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
