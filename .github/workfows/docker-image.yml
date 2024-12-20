@@ -28,5 +28,5 @@ jobs:
       # Construir y etiquetar la imagen Docker
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-service-for-minikube:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/my-service-for-minikube:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/image-service-for-minikube:latest
